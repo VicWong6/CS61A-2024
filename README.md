@@ -1,3 +1,10 @@
+# 声明
+
+这个项目是从其他人那儿forK过来的，原文档： [shuo-liu16/CS61A](https://github.com/shuo-liu16/CS61A)
+
+为了不破坏原来结构，所有的改动都是在dev分支下的，Vic文件夹来进行。
+
+
 # 文件结构
 
 - exam：pdf格式的试题
@@ -21,25 +28,26 @@
 
 <!-- TOC depthfrom:1 depthto:4 -->
 
-- [文件结构](#%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84)
-    - [前言](#%E5%89%8D%E8%A8%80)
-    - [一、CS61A是什么？](#%E4%B8%80cs61a%E6%98%AF%E4%BB%80%E4%B9%88)
-    - [二、OK自动评分器的使用](#%E4%BA%8Cok%E8%87%AA%E5%8A%A8%E8%AF%84%E5%88%86%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8)
-        - [使用](#%E4%BD%BF%E7%94%A8)
-        - [此外](#%E6%AD%A4%E5%A4%96)
-    - [三、期间遇到的一些难点](#%E4%B8%89%E6%9C%9F%E9%97%B4%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E9%9A%BE%E7%82%B9)
-        - [写题时的方法](#%E5%86%99%E9%A2%98%E6%97%B6%E7%9A%84%E6%96%B9%E6%B3%95)
-        - [hogs -> Problem 8（make_averaged函数）](#hogs---problem-8make_averaged%E5%87%BD%E6%95%B0)
-        - [cats -> Problem 7 （minimum_mewtations函数）](#cats---problem-7-minimum_mewtations%E5%87%BD%E6%95%B0)
-            - [解题步骤，首先你要明白这几点](#%E8%A7%A3%E9%A2%98%E6%AD%A5%E9%AA%A4%E9%A6%96%E5%85%88%E4%BD%A0%E8%A6%81%E6%98%8E%E7%99%BD%E8%BF%99%E5%87%A0%E7%82%B9)
-        - [Ants](#ants)
-        - [Scheme](#scheme)
-        - [Hw4 -> Q3: Balanced](#hw4---q3-balanced)
-        - [Hw7 -> Q1: Pow](#hw7---q1-pow)
-        - [Lab10 -> Q2,Q3,Q4](#lab10---q2q3q4)
-        - [lab12 and hw10 SQL](#lab12-and-hw10-sql)
-    - [四、我认为值得注意的地方](#%E5%9B%9B%E6%88%91%E8%AE%A4%E4%B8%BA%E5%80%BC%E5%BE%97%E6%B3%A8%E6%84%8F%E7%9A%84%E5%9C%B0%E6%96%B9)
-    - [总结](#%E6%80%BB%E7%BB%93)
+- [声明](#声明)
+- [文件结构](#文件结构)
+  - [前言](#前言)
+  - [一、CS61A是什么？](#一cs61a是什么)
+  - [二、OK自动评分器的使用](#二ok自动评分器的使用)
+    - [使用](#使用)
+    - [此外](#此外)
+  - [三、期间遇到的一些难点](#三期间遇到的一些难点)
+    - [写题时的方法](#写题时的方法)
+    - [hogs -\> Problem 8（make\_averaged函数）](#hogs---problem-8make_averaged函数)
+    - [cats -\> Problem 7 （minimum\_mewtations函数）](#cats---problem-7-minimum_mewtations函数)
+      - [解题步骤，首先你要明白这几点](#解题步骤首先你要明白这几点)
+    - [Ants](#ants)
+    - [Scheme](#scheme)
+    - [Hw4 -\> Q3: Balanced](#hw4---q3-balanced)
+    - [Hw7 -\> Q1: Pow](#hw7---q1-pow)
+    - [Lab10 -\> Q2,Q3,Q4](#lab10---q2q3q4)
+    - [lab12 and hw10 (SQL)](#lab12-and-hw10-sql)
+  - [四、我认为值得注意的地方](#四我认为值得注意的地方)
+  - [总结](#总结)
 
 <!-- /TOC -->
 <!-- /TOC -->
@@ -160,7 +168,7 @@ def make_averaged(original_function, samples_count=1000):
 1. 这个题使用了动态规划算法（DP），和贪心有点像，但每一步操作都和上一个状态有关
 2. typed: 起始字符串，需要通过编辑操作变换成 source。
  source: 目标字符串，我们希望 typed 变换成它。
- limit: 编辑操作的上限。写的时间长，我也忘了为什么没用它就过了
+  limit: 编辑操作的上限。写的时间长，我也忘了为什么没用它就过了
 3. dp我使用了二维数组，一个维度代表移除，一个添加，两个加起来就是替换了，是不是很妙
 4. 我好像疏忽了点什么，limit应该是提前结束的一个标志，一旦操作数超过limit就自动结束，但是这在二维表里很难操作，不加反而过了
 
