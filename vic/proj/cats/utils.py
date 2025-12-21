@@ -35,6 +35,10 @@ def lower(s):
     """
     return s.lower()
 
+def is_emp_list(source):
+    return not [x for x in source if x.strip()]
+
+
 def split(s):
     """Return a list of words contained in s, which are sequences of characters
     separated by whitespace (spaces, tabs, etc.).

@@ -1,5 +1,6 @@
 """Typing test implementation"""
 
+from asyncio.windows_events import INFINITE
 from utils import (
     lower,
     split,
@@ -7,6 +8,7 @@ from utils import (
     lines_from_file,
     count,
     deep_convert_to_tuple,
+    is_emp_list,
 )
 from ucb import main, interact, trace
 from datetime import datetime
@@ -131,8 +133,8 @@ def accuracy(typed, source):
         >>> accuracy("cats.", "cats") # punctuation counts
         0.0
     """
-    def is_emp_list(source):
-        return not [x for x in source if x.strip()]
+    # def is_emp_list(source):
+    #     return not [x for x in source if x.strip()]
 
     if is_emp_list(source_words):
         # can be simpled to :   return 100.0 if is_emp_list(typed_words) else 0.0
@@ -231,6 +233,14 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     """
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    if typed_word in word_list:
+        return typed_word
+    
+    find = [ x  for x in word_list if diff_function(typed_word, x, limit) <= limit ]
+    if is_emp_list(find):
+        return typed_word
+    else:
+        return min(find, key=lambda x: diff_function(typed_word, x, limit))
     # END PROBLEM 5
 
 
@@ -255,9 +265,28 @@ def furry_fixes(typed, source, limit):
     5
     >>> furry_fixes("rose", "hello", big_limit)   # Substitute: r->h, o->e, s->l, e->l, length difference of 1.
     5
+    
+    >>> limit = 4
+    >>> furry_fixes("roses", "arose", limit) > limit
+    True
+    >>> furry_fixes("rosesabcdefghijklm", "arosenopqrstuvwxyz", limit) > limit
+    True
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    # assert False, 'Remove this line'
+
+    # limit < 0, because result should greater than limit in some case,  e.g.: furry_fixes("awful", "awesome", 3) > 3
+    if limit < 0:
+        return 0
+    elif len(source) == 0 or len(typed) == 0:
+        return abs(len(source) - len(typed))
+    else:
+        # if diff, limit -1
+        if typed[0] != source[0]:
+            return 1 + furry_fixes(typed[1:], source[1:], limit - 1)
+        else: # find next character, and limit is original
+            return furry_fixes(typed[1:], source[1:], limit)
+
     # END PROBLEM 6
 
 
@@ -277,23 +306,38 @@ def minimum_mewtations(typed, source, limit):
     2
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
+    >>> limit = 2
+    >>> minimum_mewtations("ckiteus", "kittens", limit) > limit
+    True
+    >>> minimum_mewtations("ckiteusabcdefghijklm", "kittensnopqrstuvwxyz", limit) > limit
+    True
+    >>> minimum_mewtations("", "", big_limit) # nothing to nothing needs no edits
+    0
     """
-    assert False, 'Remove this line'
-    if ___________: # Base cases should go here, you may add more base cases as needed.
+    # assert False, 'Remove this line'
+
+    if typed == source or limit < 0: # Base cases should go here, you may add more base cases as needed.
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return 0
         # END
     # Recursive cases should go below here
-    if ___________: # Feel free to remove or add additional cases
+    if not typed or not source: # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return abs(len(typed) - len(source))
         # END
+    elif typed[0] == source[0]: # If the first letters are the same, compare the remaining strings
+        return minimum_mewtations(typed[1:], source[1:], limit)
     else:
-        add = ... # Fill in these lines
-        remove = ...
-        substitute = ...
+        "*** e.g. ('at', 'cat', 10), assume add a char, should compare remaining strings, source=cat, skip 'c' in source, so source[1:]   ***"
+        add = minimum_mewtations(typed, source[1:], limit - 1)
+        remove = minimum_mewtations(typed[1:], source, limit - 1) # e,g, ('acat', 'cat', 5) -> ('cat', 'cat', 4)
+        substitute = minimum_mewtations(typed[1:], source[1:], limit - 1) # e.g. ('mat', 'cat', 5) -> ('at', 'at', 4)
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return 1 + min(add, remove, substitute) # Because one step has been consumed to compare, 1 must be added
+
         # END
 
 
@@ -340,6 +384,24 @@ def report_progress(typed, source, user_id, upload):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    assert not is_emp_list(source), "source must not empty"
+
+    " Problem 8 desc: There will never be more words in typed than in source.  "
+    # keep all equal strings
+    hint = []
+    for idx in range(len(typed)):
+        if typed[idx] == source[idx]:
+            # print(f"DEBUG: before-----idx:{idx}, hint:{hint}, now:{typed[idx]}")
+            hint.append(typed[idx])
+            # print(f"DEBUG: after-----idx:{idx}, hint:{hint}, now:{typed[idx]}")
+        else:
+            # Once not equal, returned immediately without comparing.
+            break
+    # print(f"DEBUG: hint:{hint}, typed:{typed}, source:{source}")
+    progress = len(hint) / len(source)
+    user_info = {'id': user_id, 'progress': progress}
+    upload(user_info)
+    return progress
     # END PROBLEM 8
 
 
@@ -364,6 +426,13 @@ def time_per_word(words, timestamps_per_player):
     tpp = timestamps_per_player  # A shorter name (for convenience)
     # BEGIN PROBLEM 9
     times = []  # You may remove this line
+
+    " ------using two index-------   "
+    for i in range(len(tpp)):
+        current = []
+        for j in range(len(tpp[i]) - 1):
+            current.append(tpp[i][j + 1] - tpp[i][j])
+        times.append(current)
     # END PROBLEM 9
     return {'words': words, 'times': times}
 
@@ -391,6 +460,29 @@ def fastest_words(words_and_times):
     word_indices = range(len(words))    # contains an *index* for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+
+    result = [ [] for _ in player_indices ] # init each players with empty list
+
+    " ------Solution 1:  Using nested loop ------------"
+    """
+    for word_idx in word_indices: # loop each word
+        smallest_idx = 0 # Assume player0 is the fastest
+        temp_time = times[0][word_idx]
+        for player_idx in player_indices: # loop each player, find the smallest time
+            current_time = times[player_idx][word_idx]
+            if current_time < temp_time:
+                smallest_idx = player_idx
+                temp_time = current_time
+        result[smallest_idx].append(words[word_idx])
+    """
+
+    " ------Solution 2:  Using min function ------------"
+    for word_idx in word_indices:
+        fastest_player = min(player_indices, key = lambda p: times[p][word_idx])
+        result[fastest_player].append(words[word_idx])
+    
+    return result
+
     # END PROBLEM 10
 
 
